@@ -1,0 +1,7 @@
+Django==5.2.4
+jupyter
+langchain-google-genai
+langgraph
+python-decouple
+permit
+pip install -U langgraph "langchain[anthropic]"
