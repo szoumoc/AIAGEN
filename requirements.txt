@@ -4,4 +4,5 @@ langchain-google-genai
 langgraph
 python-decouple
 permit
-pip install -U langgraph "langchain[anthropic]"
+langgraph-supervisor
+langchain-tavily
