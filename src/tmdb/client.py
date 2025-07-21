@@ -1,17 +1,6 @@
 import requests
 from django.conf import settings
 
-url = "https://api.themoviedb.org/3/authentication"
-
-headers = {
-    "accept": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5ZGMyNzkzZGZmMzc3MmUyZWJkOTU0NDJlYTA3MDExNCIsIm5iZiI6MTc1MzA3NDQxMS42NzgwMDAyLCJzdWIiOiI2ODdkY2FlYjIzZTNmNmQwOTAzOGQ4ZTkiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.maVSFWMZNFD4IjyWuaOuJQb9nC0cd1Afi6RBNHnKqXM"
-}
-
-response = requests.get(url, headers=headers)
-
-print(response.text)
-
 
 
 def get_header():
