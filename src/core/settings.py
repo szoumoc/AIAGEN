@@ -129,3 +129,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 GOOGLE_API_KEY = config("GOOGLE_API_KEY", default=None)  # Replace with your actual Google API key
 
+TMDB_API_KEY = config("TMDB_API_KEY", default=None)  # Replace with your actual TMDB API key
