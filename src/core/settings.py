@@ -130,3 +130,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 GOOGLE_API_KEY = config("GOOGLE_API_KEY", default=None)  # Replace with your actual Google API key
 
 TMDB_API_KEY = config("TMDB_API_KEY", default=None)  # Replace with your actual TMDB API key
+PERMIT_API_KEY = config("PERMIT_API_KEY", default=None)  # Replace with your actual Permit API key
+PERMIT_PDP_URL = config("PERMIT_PDP_URL", default="https://cloudpdp.api.permit.io")  # Replace with your actual Permit PDP URL
