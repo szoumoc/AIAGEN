@@ -1,8 +1,12 @@
+from asgiref.sync import async_to_sync
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import tool
 from documents.models import Documents
 from django.conf import settings
 from django.db.models import Q
+from mypermit import permit_client as permit
+
+
 
 User = settings.AUTH_USER_MODEL
 
@@ -23,12 +27,14 @@ def search_query_documents(query: str, limit: int=5, config:RunnableConfig=None)
     user_id = configurable.get('user_id')
 
     default_lookups = {
-        "owner_id": user_id,
+
         "active": True,
         "title__icontains": query,
     }
 
-
+    has_perms = async_to_sync(permit.check)(f"{user_id}", "read", "document")
+    if not has_perms:
+        raise Exception("You do not have permission to do search the documents.")
 
     qs = Documents.objects.filter(**default_lookups).filter(
         Q(title__icontains=query) | Q(content__icontains=query)
@@ -59,6 +65,9 @@ def list_documents(limit: int=5, config:RunnableConfig={}):
         limit = 25
     configurable = config.get('configurable') or config.get('metadata')
     user_id = configurable.get('user_id')
+    has_perms = async_to_sync(permit.check)(f"{user_id}", "read", "document")
+    if not has_perms:
+        raise Exception("You do not have permission to list all the documents.")
     qs = Documents.objects.filter(owner_id=user_id, active=True).order_by('-created_at')
     response_data = []
     for obj in qs[:limit]:
@@ -77,6 +86,10 @@ def get_document(document_id:int, config:RunnableConfig):
     user_id = configurable.get('user_id')
     if user_id is None:
         raise Exception("Invalid request for user.")
+    
+    has_perms = async_to_sync(permit.check)(f"{user_id}", "read", "document")
+    if not has_perms:
+        raise Exception("You do not have permission to get individual document.")
     try:
         obj = Documents.objects.get(id=document_id, active=True)
     except Documents.DoesNotExist:
@@ -105,6 +118,11 @@ def create_document(title: str, content: str, config:RunnableConfig):
     user_id = configurable.get('user_id')
     if user_id is None:
         raise ValueError("User ID is required to create a document.")
+    
+    has_perms = async_to_sync(permit.check)(f"{user_id}", "create", "document")
+    if not has_perms:
+        raise Exception("You do not have permission to create individual documents.")
+    
     document = Documents.objects.create(
         owner_id=user_id,
         title=title,
@@ -134,6 +152,10 @@ def update_document(document_id: int,title: str=None, content: str=None, config:
     user_id = configurable.get('user_id')
     if user_id is None:
         raise ValueError("User ID is required to create a document.")
+    has_perms = async_to_sync(permit.check)(f"{user_id}", "update", "document")
+    if not has_perms:
+        raise Exception("You do not have permission to update individual documents.")
+
     try:
         obj = Documents.objects.get(id=document_id, active=True)
     except Documents.DoesNotExist:
@@ -176,6 +198,9 @@ def delete_document(document_id: int, config:RunnableConfig):
     user_id = configurable.get('user_id')
     if user_id is None:
         raise ValueError("User ID is required to delete a document.")
+    has_perms = async_to_sync(permit.check)(f"{user_id}", "delete", "document")
+    if not has_perms:
+        raise Exception("You do not have permission to delete individual documents.")
     try:
         obj = Documents.objects.get(id=document_id, active=True)
     except Documents.DoesNotExist:
